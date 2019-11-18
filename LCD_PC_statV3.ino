@@ -1,5 +1,4 @@
 // -------------------- БИБЛИОТЕКИ ---------------------
-#include <TimeLib.h>
 #include <string.h>             // библиотека расширенной работы со строками
 #include <Adafruit_GFX.h>       // Core graphics library
 #include <MCUFRIEND_kbv.h>      // Библиотека для работы с дисплеем
@@ -40,7 +39,7 @@ int ifVal[6];
 unsigned long timeout = 0;
 byte index = 0, red = 0;
 boolean reDraw_flag = 1, updateDisplay_flag, timeOut_flag = 1, text_flag = 1;
-String data_value;
+String data_value, _time, _date;
 // -------- ПЕРЕМЕННЫЕ -------------
 
 
@@ -90,15 +89,14 @@ void parsing() {
       while ((str = strtok_r(p, ";", &p)) != NULL) {
         data_value = str;
         if (index == 0) {
-          long timestump = atol(str);
-          if (timestump > 0 && (timestump - now()) > 10) {
-              setTime(timestump);
-          }
-        } else if (index > 0 && index < 18) {
-          intValues[index - 1] = data_value.toInt();
+          _time = str;
+        } else if (index == 1) { 
+          _date = str;
+        } else if (index > 1 && index < 19) {
+          intValues[index - 2] = data_value.toInt();
         } else {
-          floatValues[index - 18] = data_value.toFloat();
-          ifVal[index - 18] = data_value.toInt();
+          floatValues[index - 19] = data_value.toFloat();
+          ifVal[index - 19] = data_value.toInt();
         }
         index++;
       }
@@ -287,9 +285,9 @@ void draw_stats() {
 
   tft.setTextColor(GREY, BLACK); 
   tft.setTextSize(3);
-  drowString(298, 170, (hour() < 10 ? "0"+String(hour()) : String(hour())) + ":" + (minute() < 10 ? "0"+String(minute()) : String(minute())));
+  drowString(298, 170, _time);
   tft.setTextSize(2);
-  drowString(294, 203, (day() < 10 ? "0"+String(day()) : String(day())) + "." + (month() < 10 ? "0"+String(month()) : String(month())) + "." + String((year() - 2000)));
+  drowString(294, 203, _date);
 }
 
 void timeoutTick() {
