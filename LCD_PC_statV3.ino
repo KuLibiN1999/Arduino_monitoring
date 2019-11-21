@@ -33,13 +33,10 @@
 // -------- ПЕРЕМЕННЫЕ -------------
 MCUFRIEND_kbv tft;
 char inputData[250];
-int intValues[17];
-float floatValues[6];
-int ifVal[6];
+String values[22];
 unsigned long timeout = 0;
 byte index = 0, red = 0;
 boolean reDraw_flag = 1, updateDisplay_flag, timeOut_flag = 1, text_flag = 1;
-String data_value, _time, _date;
 // -------- ПЕРЕМЕННЫЕ -------------
 
 
@@ -83,20 +80,9 @@ void parsing() {
       char *p = inputData;
       char *str;
       index = 0;
-      memset(intValues, 0, sizeof(intValues));
-      memset(ifVal, 0, sizeof(ifVal));
-      memset(floatValues, 0, sizeof(floatValues));
       while ((str = strtok_r(p, ";", &p)) != NULL) {
-        data_value = str;
-        if (index == 0) {
-          _time = str;
-        } else if (index == 1) { 
-          _date = str;
-        } else if (index > 1 && index < 19) {
-          intValues[index - 2] = data_value.toInt();
-        } else {
-          floatValues[index - 19] = data_value.toFloat();
-          ifVal[index - 19] = data_value.toInt();
+        if (index < 22) {
+          values[index] = String(str);
         }
         index++;
       }
@@ -139,37 +125,8 @@ void drowString(uint16_t x, uint16_t y, String msg) {
   tft.print(msg);
 }
 
-String getPersentage(int val) {
-  if (val < 10) {
-    return String(val) + "%  ";
-  } else if (val < 100) {
-    return String(val) + "% ";
-  } else {
-    return "100%";
-  }
-}
 
-String getPower(int val) {
-  if (val < 10) {
-    return String(val) + "W  ";
-  } else if (val < 100) {
-    return String(val) + "W ";
-  } else {
-    return String(val)+"W";
-  }
-}
 
-String getSpeed(int ind) {
-  if (ifVal[ind] < 10) {
-    return "  " + String(floatValues[ind]);
-  } else if (ifVal[ind] < 100) {
-    return " " + String(floatValues[ind]);
-  } else if (ifVal[ind] > 999) {
-    return (String(floatValues[ind])).substring(0, 6);
-  } else {
-    return String(floatValues[ind]);
-  }
-}
 
 void draw_labels() {
   tft.fillScreen(BLACK);
@@ -242,52 +199,46 @@ void draw_stats() {
   
   //CPU
   tft.setTextColor(BLUE, BLACK);
-  drowString(30, 37, String(intValues[0]));
-  drowString(105, 37, getPersentage(intValues[1]));
-  drowString(30, 60, getPower(intValues[2]));
-  drowString(105, 60, (intValues[3] < 1000 ? " "+String(intValues[3]) : String(intValues[3])));
-
+  drowString(30, 37, values[2]);
+  drowString(105, 37, values[3]);
+  drowString(30, 60, values[4]);
+  drowString(105, 60, values[5]);
+  
   //GPU
   tft.setTextColor(GREEN, BLACK);
-  drowString(210, 37, String(intValues[4]));
-  if (intValues[5] < 100) {
-    drowString(285, 37, getPersentage(intValues[5]).substring(0, 3));
-  } else {
-    drowString(285, 37, "100");
-  }
-  if (intValues[6] < 100) {
-    drowString(348, 37, getPersentage(intValues[6]).substring(0, 3));
-  } else {
-    drowString(348, 37, "100");
-  }
-  drowString(213, 60, getPower(intValues[7]));
-  drowString(318, 60, (intValues[8] < 1000 ? " "+String(intValues[8]) : String(intValues[8])));
+  drowString(210, 37, values[6]);
+  drowString(285, 37, values[7]);
+  drowString(348, 37, values[8]);
+  drowString(213, 60, values[9]);
+  drowString(318, 60, values[10]);
 
   //MEM
   tft.setTextColor(RED, BLACK);
-  drowString(30, 125, getPersentage(intValues[9]));
-  drowString(93, 125, String(intValues[10]));
-  drowString(160, 125, String(intValues[11]));
+  drowString(30, 125, values[11]);
+  drowString(93, 125, values[12]);
+  drowString(160, 125, values[13]);
 
   //POWER
   tft.setTextColor(YELLOW, BLACK);
-  drowString(245, 125, String(intValues[13]));
-  drowString(333, 125, getPower(intValues[12]));
+  drowString(245, 125, values[15]);
+  drowString(333, 125, values[14]);
 
   //DRIVERS
   tft.setTextColor(PURP, BLACK);
-  drowString(60, 165, String(intValues[14])); 
-  drowString(115, 165, getSpeed(0) + " " + getSpeed(1));
-  drowString(60, 187, String(intValues[15])); 
-  drowString(115, 187, getSpeed(2) + " " + getSpeed(3));
-  drowString(60, 209, String(intValues[16])); 
-  drowString(115, 209, getSpeed(4) + " " + getSpeed(5));
+  drowString(60, 165, values[16]); 
+  drowString(115, 165, values[19]);
+  drowString(60, 187, values[17]); 
+  drowString(115, 187, values[20]);
+  drowString(60, 209, values[18]); 
+  drowString(115, 209, values[21]);
 
+
+  //TAIM & DATE
   tft.setTextColor(GREY, BLACK); 
   tft.setTextSize(3);
-  drowString(298, 170, _time);
+  drowString(298, 170, values[0]);
   tft.setTextSize(2);
-  drowString(294, 203, _date);
+  drowString(294, 203, values[1]);
 }
 
 void timeoutTick() {
