@@ -18,6 +18,8 @@
 #define YELLOW2 0x73A0
 #define PURP    0xC23F
 #define PURP2   0x7017
+#define ORANGE  0xFC08
+#define ORANGE2 0xCA00
 #define PI2 3.14
 #define COLOR1  0xB256
 #define COLOR2  0xB2B7
@@ -33,7 +35,7 @@
 // -------- ПЕРЕМЕННЫЕ -------------
 MCUFRIEND_kbv tft;
 char inputData[250];
-String values[22];
+String values[23];
 unsigned long timeout = 0;
 byte index = 0, red = 0;
 boolean reDraw_flag = 1, updateDisplay_flag, timeOut_flag = 1, text_flag = 1;
@@ -81,7 +83,7 @@ void parsing() {
       char *str;
       index = 0;
       while ((str = strtok_r(p, ";", &p)) != NULL) {
-        if (index < 22) {
+        if (index < 23) {
           values[index] = String(str);
         }
         index++;
@@ -160,24 +162,30 @@ void draw_labels() {
 
   //MEM
   tft.setTextColor(RED, BLACK);
-  tft.drawRoundRect(5, 93, 207, 55, 10, RED);
-  drowString(73, 98, "MEMORY");
-  tft.drawLine(6, 117, 210, 117, RED);
+  tft.drawRoundRect(5, 93, 140, 55, 10, RED);
+  drowString(40, 98, "MEMORY");
+  tft.drawLine(6, 117, 143, 117, RED);
   tft.drawBitmap(12, 124, usage, 16, 16, RED2);
   tft.drawBitmap(75, 124, temp, 16, 16, RED2);
   drowCel(118, 125, 2, RED);
-  tft.drawBitmap(143, 124, temp, 16, 16, RED2);
-  drowCel(185, 125, 2, RED);
+  //tft.drawBitmap(143, 124, temp, 16, 16, RED2);
+  //drowCel(185, 125, 2, RED);
 
 
   //POWER
   tft.setTextColor(YELLOW, BLACK);
-  tft.drawRoundRect(220, 93, 173, 55, 10, YELLOW);
-  drowString(278, 98, "POWER");
-  tft.drawLine(220, 117, 391, 117, YELLOW);
-  tft.drawBitmap(227, 124, temp, 16, 16, YELLOW2);
-  drowCel(270, 125, 2, YELLOW);
-  tft.drawBitmap(315, 124, flash, 16, 16, YELLOW2);
+  tft.drawRoundRect(152, 93, 155, 55, 10, YELLOW);
+  drowString(200, 98, "POWER");
+  tft.drawLine(153, 117, 305, 117, YELLOW);
+  tft.drawBitmap(159, 124, temp, 16, 16, YELLOW2);
+  drowCel(202, 125, 2, YELLOW);
+  tft.drawBitmap(230, 124, flash, 16, 16, YELLOW2);
+
+
+  //NETWORK
+  tft.setTextColor(ORANGE, BLACK);
+  tft.drawRoundRect(314, 93, 80, 55, 10, ORANGE);
+  tft.drawFastHLine(315, 120, 78, ORANGE);
 
 
   //DRIVES
@@ -216,22 +224,27 @@ void draw_stats() {
   tft.setTextColor(RED, BLACK);
   drowString(30, 125, values[11]);
   drowString(93, 125, values[12]);
-  drowString(160, 125, values[13]);
 
   //POWER
   tft.setTextColor(YELLOW, BLACK);
-  drowString(245, 125, values[15]);
-  drowString(333, 125, values[14]);
+  drowString(177, 125, values[14]);
+  drowString(248, 125, values[13]);
 
   //DRIVERS
   tft.setTextColor(PURP, BLACK);
-  drowString(60, 165, values[16]); 
-  drowString(115, 165, values[19]);
-  drowString(60, 187, values[17]); 
-  drowString(115, 187, values[20]);
-  drowString(60, 209, values[18]); 
-  drowString(115, 209, values[21]);
+  drowString(60, 165, values[15]); 
+  drowString(115, 165, values[18]);
+  drowString(60, 187, values[16]); 
+  drowString(115, 187, values[19]);
+  drowString(60, 209, values[17]); 
+  drowString(115, 209, values[20]);
 
+
+  //NETWORK
+  tft.setTextSize(1);
+  tft.setTextColor(ORANGE2, BLACK);
+  drowString(319, 105, values[21]);
+  drowString(319, 130, values[22]);
 
   //TAIM & DATE
   tft.setTextColor(GREY, BLACK); 
